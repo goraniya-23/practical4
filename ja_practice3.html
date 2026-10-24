@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ and Popup</title>
+<link rel="stylesheet" href="ja_practice3.css">
+</head>
+<body>
+<h2>FAQs</h2>
+<div class="faq" onclick="toggleAnswer(0)">What is this portal?</div>
+<div class="ans">This portal helps users interact with various UI elements dynamically.</div>
+<div class="faq" onclick="toggleAnswer(1)">How to use the slider?</div>
+<div class="ans">Use the buttons below the slider to view different slides.</div>
+<h2>Popup Example</h2>
+<button onclick="showPopup()">Show popup</button>
+<div id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup"><p>This is a popup message!</p><br><button onclick="closePopup()">Close</button></div>
+<script>
+function toggleAnswer(index) {
+  const answers = document.querySelectorAll(".ans");
+  answers[index].style.display = answers[index].style.display === "block" ? "none" : "block";
+}
+function showPopup() {
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("popup").style.display = "block";
+}
+function closePopup() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("popup").style.display = "none";
+}
+</script>
+</body>
+</html>

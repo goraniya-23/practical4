@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Calculator</title>
+<link rel="stylesheet" href="calc.css"></head>
+<body>
+<div class="calculator">
+  <div class="display"><div id="previous-operation"></div><div id="current-operation">0</div></div>
+  <div class="buttons">
+    <button class="btn function" onclick="clearDisplay()">AC</button><button class="btn function" onclick="deleteNumber()">DEL</button><button class="btn function" onclick="percentage()">%</button><button class="btn operator" onclick="chooseOperator('/')">÷</button>
+    <button class="btn" onclick="appendNumber('7')">7</button><button class="btn" onclick="appendNumber('8')">8</button><button class="btn" onclick="appendNumber('9')">9</button><button class="btn operator" onclick="chooseOperator('*')">×</button>
+    <button class="btn" onclick="appendNumber('4')">4</button><button class="btn" onclick="appendNumber('5')">5</button><button class="btn" onclick="appendNumber('6')">6</button><button class="btn operator" onclick="chooseOperator('-')">−</button>
+    <button class="btn" onclick="appendNumber('1')">1</button><button class="btn" onclick="appendNumber('2')">2</button><button class="btn" onclick="appendNumber('3')">3</button><button class="btn operator" onclick="chooseOperator('+')">+</button>
+    <button class="btn zero" onclick="appendNumber('0')">0</button><button class="btn" onclick="appendNumber('.')">.</button><button class="btn equal" onclick="calculate()">=</button>
+  </div>
+</div>
+<script>
+let currentNumber = "";
+let previousNumber = "";
+let operator = null;
+const currentDisplay = document.getElementById("current-operation");
+const previousDisplay = document.getElementById("previous-operation");
+function updateDisplay() {
+  currentDisplay.textContent = currentNumber || "0";
+  previousDisplay.textContent = operator && previousNumber !== "" ? previousNumber + " " + getOperatorSymbol(operator) : "";
+}
+function appendNumber(number) {
+  if (number === "." && currentNumber.includes(".")) return;
+  if (currentNumber === "0" && number !== ".") currentNumber = "";
+  currentNumber += number;
+  updateDisplay();
+}
+function chooseOperator(selectedOperator) {
+  if (currentNumber === "" && previousNumber === "") return;
+  if (previousNumber !== "" && currentNumber !== "") calculate();
+  previousNumber = currentNumber;
+  currentNumber = "";
+  operator = selectedOperator;
+  updateDisplay();
+}
+function calculate() {
+  if (previousNumber === "" || currentNumber === "" || operator === null) return;
+  const first = parseFloat(previousNumber), second = parseFloat(currentNumber);
+  let result;
+  switch (operator) {
+    case "+": result = first + second; break;
+    case "-": result = first - second; break;
+    case "*": result = first * second; break;
+    case "/":
+      if (second === 0) { currentNumber = "Error"; previousNumber = ""; operator = null; updateDisplay(); return; }
+      result = first / second; break;
+  }
+  currentNumber = String(parseFloat(result.toFixed(10)));
+  previousNumber = ""; operator = null; updateDisplay();
+}
+function clearDisplay() { currentNumber = ""; previousNumber = ""; operator = null; updateDisplay(); }
+function deleteNumber() { if (currentNumber === "Error") { clearDisplay(); return; } currentNumber = currentNumber.slice(0, -1); updateDisplay(); }
+function percentage() { if (currentNumber !== "") currentNumber = String(parseFloat(currentNumber) / 100); updateDisplay(); }
+function getOperatorSymbol(op) { return ({"+":"+","-":"−","*":"×","/":"÷"})[op] || ""; }
+document.addEventListener("keydown", function(event) {
+  const key = event.key;
+  if ((key >= "0" && key <= "9") || key === ".") appendNumber(key);
+  else if (["+", "-", "*", "/"].includes(key)) chooseOperator(key);
+  else if (key === "Enter" || key === "=") calculate();
+  else if (key === "Backspace") deleteNumber();
+  else if (key === "Escape") clearDisplay();
+  else if (key === "%") percentage();
+});
+</script></body></html>
